@@ -13,20 +13,20 @@ namespace ProjectCore.Logica.BL
         /// <param name="tenantId"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public List<Models.DB.Projects> GetProjects(int? id, 
+        public List<Models.DB.Projects> GetProjects(int? id,
             int? tenantId,
-            string userId = null) 
+            string userId = null)
         {
             DAL.Models.ProjectCoreContext _context = new DAL.Models.ProjectCoreContext();
 
-            var listProjectsEF = ( from _projects in _context.Projects
-                                select _projects).ToList();
+            var listProjectsEF = (from _projects in _context.Projects
+                                  select _projects).ToList();
 
-            if(id != null)
+            if (id != null)
             {
                 listProjectsEF = listProjectsEF.Where(x => x.Id == id).ToList();
             }
-            if(tenantId != null)
+            if (tenantId != null)
             {
                 listProjectsEF = listProjectsEF.Where(x => x.TenantId == tenantId).ToList();
             }
@@ -40,11 +40,11 @@ namespace ProjectCore.Logica.BL
             }
 
             var listProjects = (from _projects in listProjectsEF
-                                select new Models.DB.Projects 
+                                select new Models.DB.Projects
                                 {
                                     Id = _projects.Id,
                                     Title = _projects.Title,
-                                    Details =_projects.Details,
+                                    Details = _projects.Details,
                                     ExpectedCompletionDate = _projects.ExpectedCompletionDate,
                                     TenantId = _projects.TenantId,
                                     CreatedAt = _projects.CreatedAt,
@@ -62,17 +62,58 @@ namespace ProjectCore.Logica.BL
         {
             DAL.Models.ProjectCoreContext _context = new DAL.Models.ProjectCoreContext();
 
-            _context.Projects.Add( new DAL.Models.Projects 
-            { 
+            _context.Projects.Add(new DAL.Models.Projects
+            {
                 Title = title,
-                Details= details,
+                Details = details,
                 ExpectedCompletionDate = expectedCompletionDate,
                 TenantId = tenantId,
-                CreatedAt= DateTime.Now
-
-
-
+                CreatedAt = DateTime.Now
             });
+
+            //aplica todo los cambio en la BD
+            _context.SaveChanges();
+        }
+
+        /// <summary>
+        //UPDATE PROJECT
+        /// <param name="id"></param>
+        /// /// <param name="title"></param>
+        /// /// <param name="details"></param>
+        /// /// <param name="expectedCompletionDate"></param>
+        public void UpdateProjects(int id,
+            string title,
+            string details, DateTime? expectedCompletionDate)
+        {
+            DAL.Models.ProjectCoreContext _context = new DAL.Models.ProjectCoreContext();
+
+            var projectEF = _context.Projects.Where(x => x.Id == id).FirstOrDefault();
+
+            projectEF.Title = title;
+            projectEF.Details = details;
+            projectEF.ExpectedCompletionDate = expectedCompletionDate;
+            projectEF.UpdatedAt = DateTime.Now;
+
+            //aplica todo los cambio en la BD
+            _context.SaveChanges();
+        }
+
+        /// <summary>
+        /// DELETE PROJECTS
+        /// </summary>
+        /// <param name="id"></param>
+       
+        public void DeleteProjects(int? id)
+        {
+            DAL.Models.ProjectCoreContext _context = new DAL.Models.ProjectCoreContext();
+
+            //validamos dependencia de la tabla de proyectos
+            if (_context.Artifacts.Any(x => x.ProjectId == id) || _context.UserProjects.Any(x => x.ProjectId == id))
+                return;
+
+            var projectEF = _context.Projects.Where(x => x.Id == id).FirstOrDefault();
+
+            _context.Projects.Remove(projectEF);
 
             //aplica todo los cambio en la BD
             _context.SaveChanges();

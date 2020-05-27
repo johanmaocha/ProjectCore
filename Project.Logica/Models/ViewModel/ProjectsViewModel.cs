@@ -10,7 +10,7 @@ namespace ProjectCore.Logica.Models.ViewModel
     {
         //it is customizer
 
-        [Display(Name="Id")]
+        [Display(Name = "Id")]
         public int Id { get; set; }
 
         [Display(Name = "Title")]
@@ -29,6 +29,30 @@ namespace ProjectCore.Logica.Models.ViewModel
         [Display(Name = "UpdateAt")]
         public DateTime? UpdateAt { get; set; }
 
+    }
+
+    public class ProjectsDetailsViewModel
+    {
+        //it is customizer
+
+        [Display(Name = "Id")]
+        public int Id { get; set; }
+
+        [Display(Name = "Title")]
+        public string Title { get; set; }
+
+        [Display(Name = "Details")]
+        public string Details { get; set; }
+
+        [Display(Name = "ExpectedCompletionDate")]
+        public DateTime? ExpectedCompletionDate { get; set; }
+
+
+        [Display(Name = "CreatedAt")]
+        public DateTime? CreatedAt { get; set; }
+
+        [Display(Name = "UpdateAt")]
+        public DateTime? UpdateAt { get; set; }
 
     }
 }

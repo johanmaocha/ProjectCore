@@ -107,6 +107,7 @@ namespace ProjectCore.Areas.Identity.Pages.Account
                         Plan = Input.Plan
                     });
 
+
                     _contest.SaveChanges();
 
                     var aspNetUser = _contest.AspNetUsers.Where(x => x.UserName.Equals(Input.Email)).FirstOrDefault();
